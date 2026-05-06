@@ -1,0 +1,24 @@
+{
+  "name": "autoiq",
+  "version": "1.0.0",
+  "description": "AutoIQ JavaScript automation framework with Selenium and built-in auto wait synchronization.",
+  "main": "src/test/AutoIQRunner.js",
+  "scripts": {
+    "test": "node src/test/AutoIQRunner.js --category=all",
+    "smoke": "node src/test/AutoIQRunner.js --category=browser",
+    "test:api": "node src/test/AutoIQRunner.js --category=api",
+    "test:browser": "node src/test/AutoIQRunner.js --category=browser",
+    "test:desktop": "node src/test/AutoIQRunner.js --category=desktopApp",
+    "test:all": "node src/test/AutoIQRunner.js --category=all"
+  },
+  "keywords": [
+    "autoiq",
+    "selenium",
+    "automation",
+    "javascript"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "selenium-webdriver": "^4.33.0"
+  }
+}
