@@ -3,6 +3,10 @@ const AutoIQReportManager = require("../report/AutoIQReportManager");
 const ApiSmokeTest = require("./api/ApiSmokeTest");
 const GoogleSearchTest = require("./browser/GoogleSearchTest");
 const DesktopAppSmokeTest = require("./desktopApp/DesktopAppSmokeTest");
+const IosAppSmokeTest = require("./mobileTest/IosAppSmokeTest");
+const IosBrowserSearchTest = require("./mobileTest/IosBrowserSearchTest");
+const AndroidAppSmokeTest = require("./mobileTest/AndroidAppSmokeTest");
+const AndroidBrowserSearchTest = require("./mobileTest/AndroidBrowserSearchTest");
 
 function getRequestedCategory() {
   const categoryArg = process.argv.find(argument => argument.startsWith("--category="));
@@ -12,6 +16,16 @@ function getRequestedCategory() {
   }
 
   return process.env.AUTOIQ_CATEGORY || "all";
+}
+
+function getRequestedTestName() {
+  const testArg = process.argv.find(argument => argument.startsWith("--test="));
+
+  if (testArg) {
+    return testArg.split("=")[1];
+  }
+
+  return null;
 }
 
 function getTestsByCategory() {
@@ -36,6 +50,28 @@ function getTestsByCategory() {
         TestClass: DesktopAppSmokeTest,
         methodName: "desktopAppSmokeTest"
       }
+    ],
+    mobile: [
+      {
+        name: "iosAppSmokeTest",
+        TestClass: IosAppSmokeTest,
+        methodName: "iosAppSmokeTest"
+      },
+      {
+        name: "iosBrowserSearchTest",
+        TestClass: IosBrowserSearchTest,
+        methodName: "iosBrowserSearchTest"
+      },
+      {
+        name: "androidAppSmokeTest",
+        TestClass: AndroidAppSmokeTest,
+        methodName: "androidAppSmokeTest"
+      },
+      {
+        name: "androidBrowserSearchTest",
+        TestClass: AndroidBrowserSearchTest,
+        methodName: "androidBrowserSearchTest"
+      }
     ]
   };
 }
@@ -47,7 +83,8 @@ function getTestsForCategory(category) {
     return [
       ...testsByCategory.api,
       ...testsByCategory.browser,
-      ...testsByCategory.desktopApp
+      ...testsByCategory.desktopApp,
+      ...testsByCategory.mobile
     ];
   }
 
@@ -92,7 +129,18 @@ async function runSuite() {
 
   const listener = new AutoIQTestListener();
   const requestedCategory = getRequestedCategory();
-  const tests = getTestsForCategory(requestedCategory);
+  const requestedTestName = getRequestedTestName();
+  
+  let tests = getTestsForCategory(requestedCategory);
+
+  if (requestedTestName) {
+    tests = tests.filter(test => test.name === requestedTestName);
+    if (tests.length === 0) {
+      console.error(`[AutoIQ] No test found with name: ${requestedTestName}`);
+      process.exitCode = 1;
+      return [];
+    }
+  }
 
   const results = [];
   for (const test of tests) {

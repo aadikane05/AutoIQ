@@ -9,6 +9,7 @@
     "test:api": "node src/test/AutoIQRunner.js --category=api",
     "test:browser": "node src/test/AutoIQRunner.js --category=browser",
     "test:desktop": "node src/test/AutoIQRunner.js --category=desktopApp",
+    "test:mobile": "node src/test/AutoIQRunner.js --category=mobile",
     "test:all": "node src/test/AutoIQRunner.js --category=all"
   },
   "keywords": [
